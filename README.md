@@ -1,6 +1,9 @@
 # CS:GO ML bot
 Counter Strike: Global Offensive machine learning bot
 
+# Done
+- Processing video capture
+
 # To-do
 - Reading important information
   - Health
@@ -20,5 +23,3 @@ Counter Strike: Global Offensive machine learning bot
 - ML for weaponry purchase with economy management
 - ML for in-game decision (game sense)
 
-# Done
-- Processing video capture
