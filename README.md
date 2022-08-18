@@ -3,11 +3,12 @@ Counter Strike: Global Offensive machine learning bot
 
 # Done
 - Processing video capture
-
-# To-do
 - Reading important information
   - Health
   - Armor
+  
+# To-do
+- Reading important information
   - Ammo
   - Money
   - Time left in round
