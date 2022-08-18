@@ -6,6 +6,7 @@ Counter Strike: Global Offensive machine learning bot
 - Reading important information
   - Health
   - Armor
+- Capturing user input and frames (for learning)
   
 # To-do
 - Reading important information
@@ -16,7 +17,6 @@ Counter Strike: Global Offensive machine learning bot
   - Name of place on map (e.g. Jungle, Connector)
   - Position on the radar
   - Possession of the bomb
-- Capturing user input and frames (for learning)
 - ML and a path finding algorithm for walking through the map
   - Random walk
   - From point A to B (with the option to tell the bot to go to e.g. Jungle)
