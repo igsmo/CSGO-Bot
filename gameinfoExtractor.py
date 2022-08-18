@@ -2,8 +2,6 @@ import pymem
 import pymem.process
 import time
 
-pm = pymem.Pymem("csgo.exe")
-
 TEAM_IDS = {
     1: "SPECTATOR",
     2: "T",
@@ -26,40 +24,39 @@ GAMEINFO_PTRS = {
 
 }
 
-def extract_gameinfo():
-    client = pymem.process.module_from_name(pm.process_handle, "client.dll").lpBaseOfDll
-    player = pm.read_int(client + DWLOCALPLAYER)
+class GameinfoExtractor():
+    def __init__(self) -> None:
+        self.pm = pymem.Pymem("csgo.exe")
+        self.client = None
+        self.player = None
 
-    result = {}
+        self._connectToDll()
+    
+    def _connectToDll(self):
+        self.client = pymem.process.module_from_name(self.pm.process_handle, "client.dll").lpBaseOfDll
+        self.player = self.pm.read_int(self.client + DWLOCALPLAYER)
 
 
-def extract_player_stats():
-    client = pymem.process.module_from_name(pm.process_handle, "client.dll").lpBaseOfDll
-    player = pm.read_int(client + DWLOCALPLAYER)
-    playerRes = pm.read_int(client + 0x2ECCF0C)
-    print(pm.read_int(playerRes + 0x161C))
-    #print(pm.read_bool(playerRes + 0x161C))
-    result = {}
+    def getPlayerStats(self):
+        #playerRes = pm.read_int(client + 0x2ECCF0C)
+        #print(pm.read_int(playerRes + 0x161C))
+        #print(pm.read_bool(playerRes + 0x161C))
+        result = {}
 
-    for stat in PLAYER_STATS_PTRS:
-        try:
-            match PLAYER_STATS_PTRS[stat][1]:
-                case 'float':
-                    result[stat] = pm.read_float(player + PLAYER_STATS_PTRS[stat][0])
-                case 'int':
-                    temp_result = pm.read_int(player + PLAYER_STATS_PTRS[stat][0])
-                    # Assign Team name to TeamID
-                    if stat == "Team": result[stat] = TEAM_IDS[temp_result]
-                    else: result[stat] = temp_result
-                case 'bool':
-                    result[stat] = pm.read_bool(player + PLAYER_STATS_PTRS[stat][0])
-        except Exception as e:
-            print(e)
-            continue
+        for stat in PLAYER_STATS_PTRS:
+            try:
+                match PLAYER_STATS_PTRS[stat][1]:
+                    case 'float':
+                        result[stat] = self.pm.read_float(self.player + PLAYER_STATS_PTRS[stat][0])
+                    case 'int':
+                        temp_result = self.pm.read_int(self.player + PLAYER_STATS_PTRS[stat][0])
+                        # Assign Team name to TeamID
+                        if stat == "Team": result[stat] = TEAM_IDS[temp_result]
+                        else: result[stat] = temp_result
+                    case 'bool':
+                        result[stat] = self.pm.read_bool(self.player + PLAYER_STATS_PTRS[stat][0])
+            except Exception as e:
+                print(e)
+                continue
 
-    return result
-
-if __name__ == '__main__':
-    while True:
-        print(extract_player_stats())
-        time.sleep(0.5)
+        return result

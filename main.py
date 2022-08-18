@@ -2,47 +2,52 @@ from PIL import ImageGrab
 import numpy as np
 import cv2
 import time
-from pydirectinput import keyDown, keyUp, press
-import easyocr
+import datetime
+import os
 
-from gameinfoExtractor import extract_player_stats
-
-# Parameters
-CANNY_THRESHOLD1 = 200
-CANNY_THRESHOLD2 = 50
-WIDTH = 1280
-HEIGHT = 720
+import gameinfoExtractor
+import captureParameters
+import imageProcessor
+import inputManager
+import dataLogger
 
 
-def process_img(original_img):
-    processed_img = cv2.cvtColor(original_img, cv2.COLOR_BGR2GRAY)
-    processed_img = cv2.Canny(processed_img, threshold1=CANNY_THRESHOLD1, threshold2=CANNY_THRESHOLD2)
-    return processed_img
+def current_frame():
+    return np.array(ImageGrab.grab
+                                    (
+                                    bbox=(
+                                        0,
+                                        captureParameters.CAPTURE_OFFSET,
+                                        captureParameters.WIDTH,
+                                        captureParameters.HEIGHT+captureParameters.CAPTURE_OFFSET
+                                        )
+                                    )
+                                )
 
-# for i in list(range(3))[::-1]:
-#     print(i+1)
-#     time.sleep(1)
 
 def main_loop():
     
     last_time = time.time()
     while(True):
-        offset = 30
-        original_img = np.array(ImageGrab.grab(bbox=(0,offset,WIDTH,HEIGHT+offset)))
-        processed_img = process_img(original_img)
+        frame = current_frame()
+        
+        #cv2.imshow("window", frame)
+        
+        dataLoggingManager.logData(
+                imageProcessor.processForLogging(frame),
+                captureInputManager.getPressedKeys(), 
+                gameinfoManager.getPlayerStats()
+            )
 
-        cv2.imshow("window", processed_img)
-        print(extract_player_stats())
-
-        # print(f"Loop took {time.time()-last_time} s")
+        print(f"Loop took {time.time()-last_time} s")
         last_time = time.time()
-
+        
         if cv2.waitKey(25) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
             break
 
-def main():
-    main_loop()
-
 if __name__ == '__main__':
-    main()
+    captureInputManager = inputManager.InputManager()
+    gameinfoManager = gameinfoExtractor.GameinfoExtractor()
+    dataLoggingManager = dataLogger.DataLogger(file_name=f'{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}.csv')
+    main_loop()
