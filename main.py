@@ -3,9 +3,9 @@ import numpy as np
 import cv2
 import time
 from pydirectinput import keyDown, keyUp, press
-from threading import Thread
+import easyocr
 
-from statsExtractor import extract_stats
+from gameinfoExtractor import extract_player_stats
 
 # Parameters
 CANNY_THRESHOLD1 = 200
@@ -19,20 +19,20 @@ def process_img(original_img):
     processed_img = cv2.Canny(processed_img, threshold1=CANNY_THRESHOLD1, threshold2=CANNY_THRESHOLD2)
     return processed_img
 
-
 # for i in list(range(3))[::-1]:
 #     print(i+1)
 #     time.sleep(1)
 
 def main_loop():
+    
     last_time = time.time()
     while(True):
         offset = 30
         original_img = np.array(ImageGrab.grab(bbox=(0,offset,WIDTH,HEIGHT+offset)))
         processed_img = process_img(original_img)
-        cv2.imshow("window", processed_img)
 
-        
+        cv2.imshow("window", processed_img)
+        print(extract_player_stats())
 
         # print(f"Loop took {time.time()-last_time} s")
         last_time = time.time()
@@ -41,6 +41,8 @@ def main_loop():
             cv2.destroyAllWindows()
             break
 
-main_loop_thread = Thread(target=main_loop)
-main_loop_thread.start()
-main_loop_thread.join()
+def main():
+    main_loop()
+
+if __name__ == '__main__':
+    main()
