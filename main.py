@@ -2,7 +2,7 @@ from PIL import ImageGrab
 import numpy as np
 import cv2
 import time
-import datetime
+from datetime import datetime
 import os
 
 import gameinfoExtractor
@@ -49,5 +49,5 @@ def main_loop():
 if __name__ == '__main__':
     captureInputManager = inputManager.InputManager()
     gameinfoManager = gameinfoExtractor.GameinfoExtractor()
-    dataLoggingManager = dataLogger.DataLogger(file_name=f'{datetime.now().strftime("%d/%m/%Y %H:%M:%S")}.csv')
+    dataLoggingManager = dataLogger.DataLogger(file_name=f'{datetime.now().strftime("%d_%m_%Y %H_%M_%S")}.csv')
     main_loop()

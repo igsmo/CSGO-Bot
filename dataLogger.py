@@ -15,7 +15,7 @@ class DataLogger():
     def _prepareFile(self):
         if os.path.isfile(os.path.join("outputs", self.file_name)):
             print("File exists, loading previous data.")
-            self.logged_data = pd.read_csv(os.path.join("outputs", self.file_name))
+            self.logged_data = pd.read_csv(os.path.join("outputs", self.file_name), sep=";")
         else:
             print("Creating new training file")
             self.logged_data = None
@@ -28,13 +28,14 @@ class DataLogger():
 
         current_row = pd.DataFrame(data, index=[0])
         current_row = pd.concat([current_row, pd.DataFrame([frame])], axis=1)
+        print(current_row)
         # Initialize columns if first time
         if self.logged_data is None:
             self.logged_data = pd.DataFrame(current_row, index=[0])
         else:
             self.logged_data = pd.concat([self.logged_data, current_row], ignore_index=True)
         
-        if (len(self.logged_data) % 200 == 0):
-            self.logged_data.to_csv(os.path.join("outputs", self.file_name))
+        if (len(self.logged_data) % 10 == 0):
+            self.logged_data.to_csv(os.path.join("outputs", self.file_name), sep=";")
             
             

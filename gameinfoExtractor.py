@@ -47,7 +47,13 @@ class GameinfoExtractor():
             try:
                 match PLAYER_STATS_PTRS[stat][1]:
                     case 'float':
-                        result[stat] = self.pm.read_float(self.player + PLAYER_STATS_PTRS[stat][0])
+                        temp_result = self.pm.read_float(self.player + PLAYER_STATS_PTRS[stat][0])
+
+                        # Convert to 0-360deg scale
+                        if stat == "EyeAngleX" or stat == "EyeAngleY": 
+                            if temp_result < 0: temp_result += 360
+
+                        result[stat] = temp_result
                     case 'int':
                         temp_result = self.pm.read_int(self.player + PLAYER_STATS_PTRS[stat][0])
                         # Assign Team name to TeamID

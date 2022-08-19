@@ -6,7 +6,9 @@ Counter Strike: Global Offensive machine learning bot
 - Reading important information
   - Health
   - Armor
-  
+- Capturing user input and frames (for learning)
+- Reading saved training data
+
 # To-do
 - Reading important information
   - Ammo
@@ -16,7 +18,6 @@ Counter Strike: Global Offensive machine learning bot
   - Name of place on map (e.g. Jungle, Connector)
   - Position on the radar
   - Possession of the bomb
-- Capturing user input and frames (for learning)
 - ML and a path finding algorithm for walking through the map
   - Random walk
   - From point A to B (with the option to tell the bot to go to e.g. Jungle)
@@ -24,3 +25,5 @@ Counter Strike: Global Offensive machine learning bot
 - ML for weaponry purchase with economy management
 - ML for in-game decision (game sense)
 
+# Short-time to-do
+- Balance data
