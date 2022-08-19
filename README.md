@@ -8,6 +8,7 @@ Counter Strike: Global Offensive machine learning bot
   - Armor
 - Capturing user input and frames (for learning)
 - Reading saved training data
+
 # To-do
 - Reading important information
   - Ammo
