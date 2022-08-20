@@ -5,7 +5,7 @@ from random import shuffle
 import cv2
 import sys
 
-import captureParameters
+import parameters
 
 
 class DataReader:
@@ -15,6 +15,8 @@ class DataReader:
         self.data = None
 
         self._initData(columns=columns)
+
+        print(self.getData().head())
 
     def _npArrayFrameFromStr(self, img_string):
 
@@ -40,23 +42,28 @@ class DataReader:
 
     def movementColsToOneCol(self, data):
         res = data.copy()
-        keys_to_log = list(set(captureParameters.KEYS_TO_LOG).intersection(res.columns.tolist()))
-        movement_data = res[keys_to_log].values.tolist()
-        res["KeyboardData"] = movement_data
         print(res.columns.tolist())
-        res = res.drop(columns=keys_to_log)
+        # Get parameters only present in data
+        keys_to_log = [i for i, j in zip(parameters.KEYS_TO_LOG, res.columns.tolist()) if i == j]
+        keyboard_data = res[keys_to_log].values.tolist()
+        res["KeyboardData"] = keyboard_data
+        # res = res.drop(columns=keys_to_log)
+
+        # eye_data = res[["EyeAngleX", "EyeAngleY"]].values.tolist()
+        # res["EyeData"] = eye_data
+        # res = res.drop(columns=["EyeAngleX", "EyeAngleY"])
 
         return res
     
     def displayData(self,
-                    height=captureParameters.RESIZED_HEIGHT,
-                    width=captureParameters.RESIZED_WIDTH):
+                    height=parameters.RESIZED_HEIGHT,
+                    width=parameters.RESIZED_WIDTH):
         for index,row in self.data.iterrows():
             frame_rows = row["Frame"].reshape((height, width, -1 )) 
             img = cv2.resize(frame_rows, 
                                 (
-                                    captureParameters.WIDTH, 
-                                    captureParameters.HEIGHT
+                                    parameters.WIDTH, 
+                                    parameters.HEIGHT
                                 )
                             )
             

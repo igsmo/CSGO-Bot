@@ -2,7 +2,7 @@ import pymem
 import pymem.process
 import time
 
-from captureParameters import PLAYER_STATS_PTRS
+from parameters import PLAYER_STATS_PTRS
 
 TEAM_IDS = {
     1: "SPECTATOR",
