@@ -5,7 +5,7 @@ from random import shuffle
 import cv2
 import sys
 
-import captureParameters
+import parameters
 
 data = pd.read_csv('outputs/19_08_2022 20_20_10.csv', index_col=0)
 
@@ -21,16 +21,16 @@ def balanceData(data):
             astype(np.uint8). \
             reshape(
                         (
-                        captureParameters.RESIZED_HEIGHT,
-                        captureParameters.RESIZED_WIDTH,
+                        parameters.RESIZED_HEIGHT,
+                        parameters.RESIZED_WIDTH,
                         -1
                         )
                     ) 
         
         img = cv2.resize(img, 
                             (
-                                captureParameters.WIDTH, 
-                                captureParameters.HEIGHT
+                                parameters.WIDTH, 
+                                parameters.HEIGHT
                             )
                         )
         

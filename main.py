@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 import gameinfoExtractor
-import captureParameters
+import parameters
 import imageProcessor
 import inputManager
 import dataLogger
@@ -17,9 +17,9 @@ def current_frame():
                                     (
                                     bbox=(
                                         0,
-                                        captureParameters.CAPTURE_OFFSET,
-                                        captureParameters.WIDTH,
-                                        captureParameters.HEIGHT+captureParameters.CAPTURE_OFFSET
+                                        parameters.CAPTURE_OFFSET,
+                                        parameters.WIDTH,
+                                        parameters.HEIGHT+parameters.CAPTURE_OFFSET
                                         )
                                     )
                                 )
