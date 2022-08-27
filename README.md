@@ -8,6 +8,8 @@ Counter Strike: Global Offensive machine learning bot
   - Armor
 - Capturing user input and frames (for learning)
 - Reading saved training data
+- Initial alexnet ML
+
 # To-do
 - Reading important information
   - Ammo
@@ -25,4 +27,4 @@ Counter Strike: Global Offensive machine learning bot
 - ML for in-game decision (game sense)
 
 # Short-time to-do
-- Balance data
+- Change output from 3 to any number of columns

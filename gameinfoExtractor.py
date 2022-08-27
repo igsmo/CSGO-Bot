@@ -2,6 +2,8 @@ import pymem
 import pymem.process
 import time
 
+from parameters import PLAYER_STATS_PTRS
+
 TEAM_IDS = {
     1: "SPECTATOR",
     2: "T",
@@ -9,16 +11,6 @@ TEAM_IDS = {
 }
 
 DWLOCALPLAYER = (0xDC04CC)
-
-PLAYER_STATS_PTRS = {
-    "HP": [0x100, "int"],
-    "Armor": [0x117CC, "int"],
-    "Helmet": [0x117C0, 'bool'],
-    "Weapon": [12040, "int"],
-    "Team": [0xF4, "int"],
-    "EyeAngleX": [0x117D0, "float"],
-    "EyeAngleY": [0x117D4, "float"]
-}
 
 GAMEINFO_PTRS = {
 
