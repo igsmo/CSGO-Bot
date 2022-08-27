@@ -19,9 +19,13 @@ PLAYER_STATS_PTRS = {
     "EyeAngleY": [0x117D4, "float"]
 }
 RESIZED_WIDTH = 80
+<<<<<<< HEAD
 RESIZED_HEIGHT = 60
 
 # ML parameters
 LEARNING_RATE = 1e-3
 EPOCH=8
 MODEL_NAME = "csgo-{}-{}-{}epochs-{}.model".format("walk", "alexnetv2", EPOCH, 1)
+=======
+RESIZED_HEIGHT = 60
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929

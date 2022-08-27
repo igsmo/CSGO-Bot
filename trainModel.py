@@ -5,6 +5,7 @@ from sklearn.utils import shuffle
 import cv2
 
 from dataReader import DataReader
+<<<<<<< HEAD
 import parameters
 import models
 
@@ -15,6 +16,14 @@ class ModelTrainer():
 
         self.model = model()
 
+=======
+
+class ModelTrainer():
+    def __init__(self, file_name) -> None:
+        self.dataReader = DataReader(file_name=file_name, columns=["W", "A", "S", "D", "EyeAngleX", "EyeAngleY"])
+        self.training_data = self.dataReader.getData()
+
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929
     def unifyData(self):
         # When (A,D) or (W,S) == (1,1) set it (0,0) -> Avoid pressing unneccessarily
         self.training_data.loc[(self.training_data["W"] == 1) & 
@@ -53,6 +62,7 @@ class ModelTrainer():
 
         self.training_data = balanced_data
 
+<<<<<<< HEAD
     def getPreparedX(self):
         x = np.array(self.training_data["Frame"].values.tolist()). \
             reshape(-1, parameters.RESIZED_WIDTH, parameters.RESIZED_HEIGHT, 1)
@@ -86,3 +96,11 @@ if __name__ == '__main__':
     modelTrainer.unifyData()
     modelTrainer.balanceKeyboardData()
     modelTrainer.fitModel()
+=======
+
+if __name__ == '__main__':
+    modelTrainer = ModelTrainer(file_name="outputs/19_08_2022 20_20_10.csv")
+    modelTrainer.unifyData()
+    modelTrainer.balanceKeyboardData()
+    
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929

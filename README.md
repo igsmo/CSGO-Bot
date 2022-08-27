@@ -8,7 +8,10 @@ Counter Strike: Global Offensive machine learning bot
   - Armor
 - Capturing user input and frames (for learning)
 - Reading saved training data
+<<<<<<< HEAD
 - Initial alexnet ML
+=======
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929
 
 # To-do
 - Reading important information

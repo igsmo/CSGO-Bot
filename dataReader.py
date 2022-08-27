@@ -40,7 +40,11 @@ class DataReader:
             frames.append(frame)
         self.data["Frame"] = frames
 
+<<<<<<< HEAD
     def movementColsToOneCol(self, data) -> pd.DataFrame:
+=======
+    def movementColsToOneCol(self, data):
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929
         res = data.copy()
         print(res.columns.tolist())
         # Get parameters only present in data
@@ -57,7 +61,11 @@ class DataReader:
     
     def displayData(self,
                     height=parameters.RESIZED_HEIGHT,
+<<<<<<< HEAD
                     width=parameters.RESIZED_WIDTH) -> None:
+=======
+                    width=parameters.RESIZED_WIDTH):
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929
         for index,row in self.data.iterrows():
             frame_rows = row["Frame"].reshape((height, width, -1 )) 
             img = cv2.resize(frame_rows, 
@@ -65,7 +73,11 @@ class DataReader:
                                     parameters.WIDTH, 
                                     parameters.HEIGHT
                                 )
+<<<<<<< HEAD
                             ) 
+=======
+                            )
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929
             
             cv2.imshow('test', img)
 
@@ -76,10 +88,17 @@ class DataReader:
                 cv2.destroyAllWindows()
                 break
 
+<<<<<<< HEAD
     def getDataExcept(self, columns: list) -> pd.DataFrame:
         return self.data[self.data != columns]
     
     def getData(self) -> pd.DataFrame:
+=======
+    def getDataExcept(self, columns: list):
+        return self.data[self.data != columns]
+    
+    def getData(self):
+>>>>>>> 0a3baf28a1202679d91377611f4bfa975cf37929
         return self.data
         
 
