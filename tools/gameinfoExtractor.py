@@ -1,8 +1,10 @@
+from pickletools import read_bytes8
+from pydoc import plain
 import pymem
 import pymem.process
 import time
 
-from parameters import PLAYER_STATS_PTRS
+from tools.parameters import PLAYER_STATS_PTRS
 
 TEAM_IDS = {
     1: "SPECTATOR",
@@ -10,7 +12,7 @@ TEAM_IDS = {
     3: "CT"
 }
 
-DWLOCALPLAYER = (0xDC04CC)
+DWLOCALPLAYER = (0xDC14CC)
 
 GAMEINFO_PTRS = {
 
@@ -33,7 +35,6 @@ class GameinfoExtractor():
         #playerRes = pm.read_int(client + 0x2ECCF0C)
         #print(pm.read_int(playerRes + 0x161C))
         #print(pm.read_bool(playerRes + 0x161C))
-        self.pm.read
         result = {}
 
         for stat in PLAYER_STATS_PTRS:
@@ -41,7 +42,7 @@ class GameinfoExtractor():
                 match PLAYER_STATS_PTRS[stat][1]:
                     case 'float':
                         temp_result = self.pm.read_float(self.player + PLAYER_STATS_PTRS[stat][0])
-
+                        if stat == "PositionZ": temp_result += 64
                         # Convert to 0-360deg scale
                         if stat == "EyeAngleX" or stat == "EyeAngleY": 
                             if temp_result < 0: temp_result += 360

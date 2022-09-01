@@ -16,7 +16,10 @@ PLAYER_STATS_PTRS = {
     "Weapon": [12040, "int"],
     "Team": [0xF4, "int"],
     "EyeAngleX": [0x117D0, "float"],
-    "EyeAngleY": [0x117D4, "float"]
+    "EyeAngleY": [0x117D4, "float"],
+    "PositionX": [0x138, "float"],
+    "PositionY": [0x13C, "float"],
+    "PositionZ": [0x140, "float"]
 }
 RESIZED_WIDTH = 80
 RESIZED_HEIGHT = 60

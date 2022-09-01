@@ -9,6 +9,7 @@ Counter Strike: Global Offensive machine learning bot
 - Capturing user input and frames (for learning)
 - Reading saved training data
 - Initial alexnet ML
+- Player position reading
 # To-do
 - ML and a path finding algorithm for walking through the map
   - Random walk
@@ -18,5 +19,4 @@ Counter Strike: Global Offensive machine learning bot
 - ML for in-game decision (game sense)
 
 # Short-time to-do
-- Read player position (pointer may be 0x134)
-https://www.unknowncheats.me/forum/counterstrike-global-offensive/280107-help-emenys-position-health-cs.html
+- Save waypoints for pathfinding from player position

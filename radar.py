@@ -3,6 +3,7 @@ import time
 import matplotlib.pyplot as plt
 
 from tools import imageProcessor
+from tools import gameinfoExtractor
 
 def getPlayerLocation(radar_img):
     radius = 3
@@ -18,8 +19,10 @@ def getPlayerLocation(radar_img):
 radar_img = cv2.imread('radar_sample.png', 1)
 
 while(True):
-    cv2.imshow('image', getPlayerLocation(radar_img)[1])
-    print(getPlayerLocation(radar_img))
+    #cv2.imshow('image', getPlayerLocation(radar_img)[1])
+    
+    gameinfoManager = gameinfoExtractor.GameinfoExtractor()
+    print(gameinfoManager.getPlayerStats())
+
     if cv2.waitKey(25) & 0xFF == ord('q'):
-        cv2.destroyAllWindows()
         break
