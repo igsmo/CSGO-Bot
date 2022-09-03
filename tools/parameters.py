@@ -24,6 +24,9 @@ PLAYER_STATS_PTRS = {
 RESIZED_WIDTH = 80
 RESIZED_HEIGHT = 60
 
+# Pathfinding parameters
+WAYPOINTS_NAME = "de_mirage-waypoints-{}".format(1)
+
 # ML parameters
 LEARNING_RATE = 1e-3
 EPOCH=8
