@@ -15,8 +15,10 @@ def addWaypoint(key):
     global waypoint_data
 
     if str(key) == "'.'":
-        np.save(parameters.WAYPOINTS_NAME, waypoint_data.to_numpy())
-        print(f"Saved '{parameters.WAYPOINTS_NAME}.npy'")
+        # np.save(parameters.WAYPOINTS_NAME, waypoint_data.to_numpy())\
+        
+        waypoint_data.to_csv(parameters.WAYPOINTS_NAME+".csv", sep=';', index=False)
+        print(f"Saved '{parameters.WAYPOINTS_NAME}.csv'")
 
     if str(key) == "'/'":
         stats = gameinfoManager.getPlayerStats()
@@ -25,13 +27,13 @@ def addWaypoint(key):
         if waypoint_data is None:
             waypoint_data = pd.DataFrame({"WaypointID": [0],
                                         "PosXYZ": [positions],
-                                        "Connections": [np.array([])]})
+                                        "Connections": "[]"})
         else:
             waypoint_id = int(waypoint_data.iloc[-1:]["WaypointID"]) + 1
             print(waypoint_id)
             row = pd.DataFrame({"WaypointID": [waypoint_id],
                                         "PosXYZ": [positions],
-                                        "Connections": [np.array([])]})
+                                        "Connections": "[]"})
             waypoint_data = pd.concat([waypoint_data, row])
 
         print(waypoint_data)

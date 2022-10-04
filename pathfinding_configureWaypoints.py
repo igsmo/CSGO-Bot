@@ -4,68 +4,109 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import pandas as pd
+from ast import literal_eval
 
 from tools import parameters
 
+def extract_connections_arr(ind):
+        connections = waypoints_df.loc[ind, ["Connections"]].copy()[0][1:-1].split(",")
+
+        # Set to empty array if no elements
+        if connections == ['']:
+            connections = []
+        
+        # Convert to int and add
+        connections = [int(i) for i in connections]
+
+        return connections
+
+def update_waypoint_connections():
+    ax.clear()
+    
+    scatter = ax.scatter(waypoints_df.x, waypoints_df.y, waypoints_df.z, c=waypoints_df.z, picker=True)
+    
+    for i,row in waypoints_df.iterrows():
+        x_start = row.x
+        y_start = row.y
+        z_start = row.z
+        print(f"Start connect: {row.WaypointID}")
+
+        connections = extract_connections_arr(row.WaypointID)
+
+        for conn_to_plot in connections:
+            print(f"To connect: {waypoints_df.iloc[conn_to_plot].WaypointID}")
+            x_end = waypoints_df.iloc[conn_to_plot].x
+            y_end = waypoints_df.iloc[conn_to_plot].y
+            z_end = waypoints_df.iloc[conn_to_plot].z
+            print([x_start, x_end], [y_start, y_end], [z_start, z_end])
+            ax.plot([x_start, x_end], [y_start, y_end], [z_start, z_end])
+    
+    plt.draw()
+
 def on_pick(event):
     global latest_selected
-
+    
+    artist = event.artist
+    xData, yData, zData = [o.data for o in artist._offsets3d]
+    
+    point = [list(xData), list(yData), list(zData)]
     ind = event.ind[0]
-    selected_point = waypoints_df.iloc[ind]
+    print(point)
+
+    selected_point = waypoints_df[(waypoints_df["x"] == point[0][ind]) & (waypoints_df["y"] == point[1][ind])].iloc[0]
+
+    print(selected_point)
 
     if latest_selected is not None:
-        if latest_selected["id"] != selected_point["id"]:
+        if latest_selected["WaypointID"] != selected_point["WaypointID"]:
             
-            #TODO: Add new waypoint connections
+            selected_connections = extract_connections_arr(ind)
+            latest_connections = extract_connections_arr(latest_selected.WaypointID)
 
-            old_column_value = np.fromstring(selected_point["connections"])
-            print("Current row")
-            print(old_column_value)
+            if int(latest_selected["WaypointID"]) in selected_connections:
+                return
 
-            new_column_value = [
-                                    np.array2string(
-                                        np.array(np.append(old_column_value,
-                                                    latest_selected["id"]))
-                                    )
-                                ]
+            selected_connections.append(latest_selected["WaypointID"])
+            latest_connections.append(selected_point["WaypointID"])
 
-            print("To be updated row")
-            print(new_column_value)
+            # Replace column value
+            waypoints_df.loc[selected_point["WaypointID"], "Connections"] = str(selected_connections)
+            waypoints_df.loc[latest_selected["WaypointID"], "Connections"] = str(latest_connections)
 
-            waypoints_df.loc[ind, ["connections"]] = new_column_value
+            # Update graph
+            update_waypoint_connections()
 
-    latest_selected = selected_point
+    if latest_selected is None:
+        latest_selected = selected_point
+    else:
+        latest_selected = None
 
     print("Updated DF")
     print(waypoints_df)
 
-waypoints_list = np.load(parameters.WAYPOINTS_NAME+'.npy', allow_pickle=True)
+waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+".csv", sep=';')
 
-xdata, ydata, zdata, ids, connections = [], [], [], [], []
-latest_selected = None
+waypoints_df['WaypointID'] = waypoints_df['WaypointID'].astype("int")
 
-for row in waypoints_list:
-    ids.append(row[0])
-    xdata.append(row[1][0])
-    ydata.append(row[1][1])
-    zdata.append(row[1][2])
-    connections.append(np.array2string(row[2]))
+waypoints_df['Connections'] = waypoints_df['Connections'].astype("string")
+waypoints_df['PosXYZ'] = waypoints_df['PosXYZ'].apply(lambda x: " ".join(str(x).split())[2:-2].split(" "))
 
-waypoints_df = pd.DataFrame({
-    "id": ids,
-    "x": xdata,
-    "y": ydata,
-    "z": zdata,
-    "connections": connections
-})
+waypoints_df["x"] = waypoints_df['PosXYZ'].apply(lambda x: x[0]).astype(float)
+waypoints_df["y"] = waypoints_df['PosXYZ'].apply(lambda x: x[1]).astype(float)
+waypoints_df["z"] = waypoints_df['PosXYZ'].apply(lambda x: x[2]).astype(float)
 
 print(waypoints_df)
+
+latest_selected = None
 
 ax = plt.axes(projection='3d')
 fig = ax.get_figure()
 
-ax.scatter(waypoints_df.x, waypoints_df.y, waypoints_df.z, c=waypoints_df.z, picker=True)
+scatter = ax.scatter(waypoints_df.x, waypoints_df.y, waypoints_df.z, c=waypoints_df.z, picker=True)
+plot_points = scatter.get_offsets()
 
 cid = fig.canvas.mpl_connect('pick_event', on_pick)
 
 plt.show()
+
+update_waypoint_connections()
