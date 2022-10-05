@@ -13,6 +13,7 @@ Counter Strike: Global Offensive machine learning bot
 - Save waypoints for pathfinding from player position
 - GUI for editing pathfinding waypoint connections
 - Add connections to dataframe
+- Fix line plotting GUI
 # To-do
 - ML and a path finding algorithm for walking through the map
   - Random walk
@@ -22,4 +23,5 @@ Counter Strike: Global Offensive machine learning bot
 - ML for in-game decision (game sense)
 
 # Short-time to-do
-- Fix line plotting GUI
+- Fix positions https://forums.alliedmods.net/showthread.php?t=301056
+- Add map image to matplotlib graph
