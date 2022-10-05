@@ -23,12 +23,11 @@ def extract_connections_arr(ind):
 def update_waypoint_connections():
     ax.clear()
     
-    scatter = ax.scatter(waypoints_df.x, waypoints_df.y, waypoints_df.z, c=waypoints_df.z, picker=True)
+    scatter = ax.scatter(waypoints_df.x, waypoints_df.y, c=waypoints_df.z, picker=True)
     
     for i,row in waypoints_df.iterrows():
         x_start = row.x
         y_start = row.y
-        z_start = row.z
         print(f"Start connect: {row.WaypointID}")
 
         connections = extract_connections_arr(row.WaypointID)
@@ -37,24 +36,17 @@ def update_waypoint_connections():
             print(f"To connect: {waypoints_df.iloc[conn_to_plot].WaypointID}")
             x_end = waypoints_df.iloc[conn_to_plot].x
             y_end = waypoints_df.iloc[conn_to_plot].y
-            z_end = waypoints_df.iloc[conn_to_plot].z
-            print([x_start, x_end], [y_start, y_end], [z_start, z_end])
-            ax.plot([x_start, x_end], [y_start, y_end], [z_start, z_end])
+            print([x_start, x_end], [y_start, y_end])
+            ax.plot([x_start, x_end], [y_start, y_end])
     
     plt.draw()
 
 def on_pick(event):
     global latest_selected
     
-    artist = event.artist
-    xData, yData, zData = [o.data for o in artist._offsets3d]
-    
-    point = [list(xData), list(yData), list(zData)]
     ind = event.ind[0]
-    print(point)
 
-    selected_point = waypoints_df[(waypoints_df["x"] == point[0][ind]) & (waypoints_df["y"] == point[1][ind])].iloc[0]
-
+    selected_point = waypoints_df.iloc[ind]
     print(selected_point)
 
     if latest_selected is not None:
@@ -99,11 +91,10 @@ print(waypoints_df)
 
 latest_selected = None
 
-ax = plt.axes(projection='3d')
+ax = plt.axes()
 fig = ax.get_figure()
 
-scatter = ax.scatter(waypoints_df.x, waypoints_df.y, waypoints_df.z, c=waypoints_df.z, picker=True)
-plot_points = scatter.get_offsets()
+scatter = ax.scatter(waypoints_df.x, waypoints_df.y, c=waypoints_df.z, picker=True)
 
 cid = fig.canvas.mpl_connect('pick_event', on_pick)
 
