@@ -14,13 +14,13 @@ waypoint_data = None
 def addWaypoint(key):
     global waypoint_data
 
-    if str(key) == "'.'":
+    if str(key) == "'.'": # Finish and save waypoints
         # np.save(parameters.WAYPOINTS_NAME, waypoint_data.to_numpy())\
         
         waypoint_data.to_csv(parameters.WAYPOINTS_NAME+".csv", sep=';', index=False)
         print(f"Saved '{parameters.WAYPOINTS_NAME}.csv'")
 
-    if str(key) == "'/'":
+    if str(key) == "'/'": # Add waypoint
         stats = gameinfoManager.getPlayerStats()
         positions = np.array([stats["PositionX"], stats["PositionY"], stats["PositionZ"]])
         # waypoint_id = waypoint_data[-1][0] + 1

@@ -25,7 +25,8 @@ RESIZED_WIDTH = 80
 RESIZED_HEIGHT = 60
 
 # Pathfinding parameters
-WAYPOINTS_NAME = "de_mirage-waypoints-{}".format(1)
+WAYPOINTS_NAME = "de_mirage-waypoints-{}".format(2)
+PLOT_PROJECTION = "2D" # 3D or 2D
 
 # ML parameters
 LEARNING_RATE = 1e-3
