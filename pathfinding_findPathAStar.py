@@ -67,7 +67,7 @@ def plotPath():
     plt.show()
 
 
-def calculateDistances():
+def calculateDistancesBetweenConnections():
     waypoints_df["Distances"] = ""
 
     for i,row in waypoints_df.iterrows():
@@ -85,11 +85,32 @@ def calculateDistances():
         waypoints_df.loc[i, ["Distances"]] = f"{distances}"
 
 
+def calculateDistancesToFinish(end_point):
+    waypoints_df["HeuristicDistance"] = 0.0
+
+    end_coordinates = np.array([float(i) for i in waypoints_df.iloc[end_point]["PosXYZ"]]) # Get x,y,z of end point
+
+    for i,row in waypoints_df.iterrows():
+        coordinates = np.array([float(i) for i in row["PosXYZ"]]) # Convert string to floats to get x,y,z
+
+        distance = np.sqrt(np.sum((end_coordinates-coordinates)**2, axis=0)) # Calculate distance
+
+        waypoints_df.loc[i, ["HeuristicDistance"]] = distance
+
+
+def performAStar(start_point, end_point):
+    
+
+
 def main():
-    START_POINT = 12
-    DESTINATION_POINT = 3
+    # TEST VARIABLES 
+    end_point = 12
+    start_point = 3
     readData()
-    calculateDistances()
+    calculateDistancesBetweenConnections()
+    calculateDistancesToFinish(end_point)
+
+    print(waypoints_df)
 
 
 if __name__ == '__main__':
