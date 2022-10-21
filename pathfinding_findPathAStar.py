@@ -9,6 +9,7 @@ import matplotlib.image as mpimg
 import pandas as pd
 from ast import literal_eval
 from pynput import keyboard # , mouse
+import heapq
 
 from tools import parameters
 
@@ -98,65 +99,64 @@ def calculateDistancesToFinish(end_point):
         waypoints_df.loc[i, ["HeuristicDistance"]] = distance
 
 
-def getHeuristicDistance(id):
-    return waypoints_df.iloc[id]["HeuristicDistance"]
-
-
-def getDistance(id):
-    return waypoints_df.iloc[id]["Distance"]
-
-
-def getInsertSortedI(arr_in, key):
-    n = len(arr_in)
-    arr = arr_in.copy() + [0 for i in range(len(arr_in))]
-
-    i = n - 1
-
-    while i >= 0 and arr[i] > key:
-        arr[i + 1] = arr[i]
-        i -= 1
+# graph is a dictionary:
+# {id:{id_conn:[distance, heuristic], ...}}
+def astar(graph,start_node,end_node):
+    # astar: F=G+H, we name F as f_distance, G as g_distance, 
+    # H as heuristic
+    f_distance={node:float('inf') for node in graph}
+    f_distance[start_node]=0
     
-    return i + 1
-
-
-def performAStar(start_point, end_point):
-    visited = [start_point]
-
-    ids_queue = [start_point]
-    dist_queue = [0]
-    weight_queue = [getHeuristicDistance(start_point)]
+    g_distance={node:float('inf') for node in graph}
+    g_distance[start_node]=0
     
-    while ids_queue is not []:
-        
-        current_id = ids_queue[0]
-        current_connections = getArrayFromStringColumn(current_id, "Connections", datatype=int)
-        current_distances = getArrayFromStringColumn(current_id, "Distances", datatype=float)
-        current_heuristic = float(waypoints_df.iloc[current_id]["HeuristicDistance"])
+    came_from={node:None for node in graph}
+    came_from[start_node]=start_node
+    
+    queue=[(0,start_node)]
+    while queue:
+        current_f_distance,current_node=heapq.heappop(queue)
 
-        print(current_id, current_connections, visited)
-        for i,id in enumerate(current_connections):
-            if id in visited: continue
-            
-            next_heuristic = waypoints_df.iloc[id]["HeuristicDistance"]
-            next_distance = current_distances[i] + dist_queue[0]
-            weight = next_heuristic + next_distance
+        if current_node == end_node:
+            print('found the end_node')
+            return f_distance, came_from
+        for next_node,weights in graph[current_node].items():
+            temp_g_distance=g_distance[current_node]+weights[0]
+            if temp_g_distance<g_distance[next_node]:
+                g_distance[next_node]=temp_g_distance
+                heuristic=weights[1]
+                f_distance[next_node]=temp_g_distance+heuristic
+                came_from[next_node]=current_node
+                
+                heapq.heappush(queue,(f_distance[next_node],next_node))
+    return f_distance, came_from
 
-            insert_ind = getInsertSortedI(weight_queue, weight)
 
-            if insert_ind > len(ids_queue):
-                ids_queue.append(id)
-                dist_queue.append(next_distance)
-                weight_queue.append(weight)
-            else:
-                ids_queue.insert(insert_ind, id)
-                dist_queue.insert(insert_ind, next_distance)
-                weight_queue.insert(insert_ind, weight)
+def getGraphFromWaypointsDf():
+    graph = {}
+    for i,row in waypoints_df.iterrows():
+        connections = getArrayFromStringColumn(i, "Connections", datatype=int)
+        distances = getArrayFromStringColumn(i, "Distances", datatype=float)
 
-            visited.append(id)
-            ids_queue.pop(0)
-            dist_queue.pop(0)
-            weight_queue.pop(0)
+        dict_to_insert = {}
+        for j,conn_id in enumerate(connections):
+            dict_to_insert[conn_id] = [distances[j], waypoints_df.iloc[conn_id]["HeuristicDistance"]]
 
+        graph[int(row["WaypointID"])] = dict_to_insert
+    
+    return graph
+
+
+def getPath(start_point, end_point):
+    came_from = astar(getGraphFromWaypointsDf(),start_point,end_point)[1]
+    current = end_point
+    path = []
+    while current != start_point:
+        path.append(current)
+        current = came_from[current]
+    path.append(start_point)
+
+    return path[::-1]
 
 
 def main():
@@ -169,8 +169,7 @@ def main():
 
     print(waypoints_df)
 
-    performAStar(start_point, end_point)
-
+    print(getPath(start_point,end_point))
 
 if __name__ == '__main__':
     main()

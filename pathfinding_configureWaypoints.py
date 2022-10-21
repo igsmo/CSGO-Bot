@@ -115,8 +115,8 @@ def addKeyListener():
 def readData():
     global waypoints_df, latest_selected
 
-    waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+"_modified.csv", sep=';')
-    # waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+".csv", sep=';')
+    # waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+"_modified.csv", sep=';')
+    waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+".csv", sep=';')
 
     waypoints_df['WaypointID'] = waypoints_df['WaypointID'].astype("int")
 
