@@ -18,17 +18,7 @@ GAMEINFO_PTRS = {
 
 }
 
-def GetPointer(pm, base, offsets):
-    addr = pm.read_longlong(base+0x04D934B0) # <-- here was the probleme solved
-    print(hex(addr))
-    for offset in offsets:
-        if offset != offsets[-1]:
-            try:
-                addr = pm.read_longlong(addr + offset)
-                print(addr)
-            except Exception as e:
-                print(e)
-    return addr + offsets[-1]
+
 class GameinfoExtractor():
     def __init__(self) -> None:
         self.pm = pymem.Pymem("csgo.exe")

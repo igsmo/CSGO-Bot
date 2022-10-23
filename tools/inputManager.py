@@ -5,15 +5,20 @@ import parameters
 
 class InputManager(keyboard.Listener):
     def __init__(self) -> None:
+        self.pressed_keys = None # To use it, run initKeyboardCapture()
+
+        self.initKeyboardCapture()
+
+        # mouseCaptureProcess = mouse.Listener(
+        #     on_click=self._onClickMouse)
+        # mouseCaptureProcess.start()
+
+    def initKeyboardCapture(self):
         self.pressed_keys = dict.fromkeys(parameters.KEYS_TO_LOG, 0)
 
         keyboardCaptureProcess = keyboard.Listener(on_press=self._onPressKeyboard, 
                                                     on_release=self._onReleaseKeyboard)
         keyboardCaptureProcess.start()
-
-        # mouseCaptureProcess = mouse.Listener(
-        #     on_click=self._onClickMouse)
-        # mouseCaptureProcess.start()
 
     def _onPressKeyboard(self, key):
         key = str(key).replace("'", "").upper()
