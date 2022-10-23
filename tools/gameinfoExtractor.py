@@ -12,12 +12,23 @@ TEAM_IDS = {
     3: "CT"
 }
 
-DWLOCALPLAYER = (0xDC14CC)
+DWLOCALPLAYER = (0xDE6964)
 
 GAMEINFO_PTRS = {
 
 }
 
+def GetPointer(pm, base, offsets):
+    addr = pm.read_longlong(base+0x04D934B0) # <-- here was the probleme solved
+    print(hex(addr))
+    for offset in offsets:
+        if offset != offsets[-1]:
+            try:
+                addr = pm.read_longlong(addr + offset)
+                print(addr)
+            except Exception as e:
+                print(e)
+    return addr + offsets[-1]
 class GameinfoExtractor():
     def __init__(self) -> None:
         self.pm = pymem.Pymem("csgo.exe")
@@ -25,18 +36,17 @@ class GameinfoExtractor():
         self.player = None
 
         self._connectToDll()
-    
+
     def _connectToDll(self):
         self.client = pymem.process.module_from_name(self.pm.process_handle, "client.dll").lpBaseOfDll
         self.player = self.pm.read_int(self.client + DWLOCALPLAYER)
-
 
     def getPlayerStats(self):
         #playerRes = pm.read_int(client + 0x2ECCF0C)
         #print(pm.read_int(playerRes + 0x161C))
         #print(pm.read_bool(playerRes + 0x161C))
         result = {}
-
+        
         for stat in PLAYER_STATS_PTRS:
             try:
                 match PLAYER_STATS_PTRS[stat][1]:

@@ -161,8 +161,8 @@ def getPath(start_point, end_point):
 
 def main():
     # TEST VARIABLES 
-    end_point = 12
-    start_point = 3
+    end_point = 82
+    start_point = 0
     readData()
     calculateDistancesBetweenConnections()
     calculateDistancesToFinish(end_point)

@@ -47,9 +47,12 @@ def updateWaypointConnections():
             x_end = waypoints_df.iloc[conn_to_plot].x
             y_end = waypoints_df.iloc[conn_to_plot].y
             z_end = waypoints_df.iloc[conn_to_plot].z
-            print([x_start, x_end], [y_start, y_end], [z_start, z_end])
             ax.plot([x_start, x_end], [y_start, y_end], [z_start, z_end])
-    
+
+    pid = waypoints_df["WaypointID"].tolist()
+    for xi, yi, pidi in zip(waypoints_df.x,waypoints_df.y,pid):
+        ax.annotate(str(pidi), xy=(xi,yi))
+        
     plt.draw()
 
 def onPick(event):
@@ -80,6 +83,7 @@ def onPick(event):
             latest_connections = extractConnectionsArr(latest_selected.WaypointID)
 
             if int(latest_selected["WaypointID"]) in selected_connections:
+                updateWaypointConnections()
                 return
 
             selected_connections.append(latest_selected["WaypointID"])
@@ -115,8 +119,8 @@ def addKeyListener():
 def readData():
     global waypoints_df, latest_selected
 
-    # waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+"_modified.csv", sep=';')
-    waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+".csv", sep=';')
+    waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+"_modified.csv", sep=';')
+    # waypoints_df = pd.read_csv(parameters.WAYPOINTS_NAME+".csv", sep=';')
 
     waypoints_df['WaypointID'] = waypoints_df['WaypointID'].astype("int")
 
@@ -152,6 +156,10 @@ def startPlot():
         scatter = ax.scatter(waypoints_df.x, waypoints_df.y, c=waypoints_df.z, picker=True)
 
     plot_points = scatter.get_offsets()
+
+    pid = waypoints_df["WaypointID"].tolist()
+    for xi, yi, pidi in zip(waypoints_df.x,waypoints_df.y,pid):
+        ax.annotate(str(pidi), xy=(xi,yi))
 
     cid = fig.canvas.mpl_connect('pick_event', onPick)
 
