@@ -60,3 +60,8 @@ class GameinfoExtractor():
                 continue
 
         return result
+
+    def writePlayerStats(self, stat_name: str, value, datatype=float):
+        match PLAYER_STATS_PTRS[stat_name][1]:
+            case 'float':
+                self.pm.write_float(self.player + PLAYER_STATS_PTRS[stat_name][0], value)
