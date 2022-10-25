@@ -1,4 +1,5 @@
 from pynput.keyboard import Key, Controller
+import keyboard
 import win32api, win32con
 import math
 
@@ -14,58 +15,95 @@ class MovementController():
 
         self.keyboard = Controller()
 
-    # Moves mouse to given angles
+    """ 
+    # Converts to 0-pi*2 scale
+    # Returns angle in radians
+    def _angleTrunc(self, a) -> float:
+        while a < 0.0:
+            a += math.pi * 2
+        return a
+
+    # Calculate angle between two points 
+    # Returns angle between points in radians
+    def _getAngleBetweenPoints(self, point_origin, point_end) -> float:
+        new_x = point_end[0] - point_origin[0]
+        new_y = point_end[1] - point_origin[1]
+        return self._angleTrunc(math.atan2(new_y, new_x))
+    """
+
+    # Rotates around specified axis by given degrees
+    # degress is list [x_deg,y_deg]
+    def rotateByDegrees(self, degrees: list, movement_speed=1) -> None:
+        # 1 px unit is 0.022 degrees
+        print(f"Rotating by {degrees}")
+        # Rotate horizontally
+    
+        if 360-degrees[1] >= degrees[1]:
+            dx = round(degrees[1]/0.022 / parameters.SENSITIVITY)
+        elif 360+degrees[1] < degrees[1]:
+            dy = round((degrees[1]+360)/0.022 / parameters.SENSITIVITY)
+        else:
+            dx = round((degrees[1]-360)/0.022 / parameters.SENSITIVITY)
+
+        direction = 0
+        if dx < 0: direction = 1
+        if dx >= 0: direction = -1
+
+        for i in range(abs(dx)):
+            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, direction*movement_speed, 0, 0, 0)
+
+        # Rotate vertically
+        print(degrees[0])
+        # Check if it is faster to rotate up or down
+        if degrees[0] <= 0:
+            degrees[0] += 360
+        elif degrees[0] >= 360:
+            degrees[0] -= 360
+
+        if 360-degrees[0] >= degrees[0]:
+            dy = round(degrees[0]/0.022 / parameters.SENSITIVITY)
+        elif 360+degrees[0] < degrees[0]:
+            dy = round((degrees[0]+360)/0.022 / parameters.SENSITIVITY)
+        else:
+            dy = round((degrees[0]-360)/0.022 / parameters.SENSITIVITY)
+
+        direction = 0
+        if dy < 0: direction = -1
+        if dy >= 0: direction = 1
+
+        for i in range(abs(dy)):
+            win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, direction*movement_speed, 0, 0)
+
+
+    # Moves mouse to given angles       
     # destination -> [EyeAngleX,EyeAngleY]
     # error -> angle in degrees to be of error
     # movement_speed -> how fast to move mouse
-    def orientateToAngle(self, destination: list, error=2, movement_speed=1):
+    def orientateToAngle(self, destination: list) -> None:
         stats = self.gameinfoManager.getPlayerStats()
 
-        # Convert to 0 - 360 deg
-        if destination[0] < 0: destination[0] += 360
-        if destination[1] < 0: destination[1] += 360
+        eyes = [stats["EyeAngleX"], stats["EyeAngleY"]]
+        rotation_goal = [destination[0] - stats["EyeAngleX"], destination[1] - stats["EyeAngleY"]]
 
-        # Move horizontally
-        while (abs(stats["EyeAngleY"] - destination[0]) > error):
-            
-            # Move right if destination is on the right
-            if stats["EyeAngleY"] - destination[0] < 0:
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, movement_speed, 0, 0, 0)
-            # Move left if destination is on the left
-            if stats["EyeAngleY"] - destination[0] > 0:
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, -movement_speed, 0, 0, 0)
+        # print(f"Current eyes {eyes} and wanted rotation {destination} gives {rotation_goal}")
 
-            stats = self.gameinfoManager.getPlayerStats()
+        self.rotateByDegrees(rotation_goal)
 
-            time.sleep(0.01)
-
-
-        # Move vertically
-        while abs(stats["EyeAngleX"] - destination[1])  > error:
-            # Move up if destination is up
-            if stats["EyeAngleX"] - destination[1] < 0:
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, -movement_speed, 0, 0)
-            # Move down if destination is down
-            if stats["EyeAngleX"] - destination[1] > 0:
-                win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, 0, movement_speed, 0, 0)
-
-            stats = self.gameinfoManager.getPlayerStats()
-
-            time.sleep(0.01)
-            
 
     # Moves mouse so it is looking towards given point
     # destination -> [posX,posY]
     # error -> angle in degrees to be of error
     # movement_speed -> how fast to move mouse
-    def orientateTowardsPoint(self, point: list, error=2, movement_speed=20):
+    def orientateTowardsPoint(self, point: list) -> None:
         stats = self.gameinfoManager.getPlayerStats()
 
         # Calculate desitnation EyeAngleX and cast to degrees
-        destination_x_ang = math.atan((point[1]-stats["PositionY"])/(point[0]-stats["PositionX"]))
-        destination_x_ang = math.degrees(destination_x_ang)
-        print(destination_x_ang)
-        self.orientateToAngle([0, destination_x_ang], error=error, movement_speed=movement_speed)
+        new_x = point[0] - stats["PositionX"]
+        new_y = point[1] - stats["PositionY"]
+        
+        destination_x_ang = math.degrees(math.atan2(new_y, new_x))
+
+        self.orientateToAngle([0, destination_x_ang])
 
 
 def main():

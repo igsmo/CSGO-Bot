@@ -21,6 +21,5 @@ Counter Strike: Global Offensive machine learning bot
 - ML for in-game decision (game sense)
 
 # Short-time to-do
-- Change movement_speed of mouse to exponential decay (the closer it is, the slower it moves)
 - Add walking functionality
 - Create a list of points with places (kitchen, A, B, short, etc.)

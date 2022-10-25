@@ -31,6 +31,15 @@ class GameinfoExtractor():
         self.client = pymem.process.module_from_name(self.pm.process_handle, "client.dll").lpBaseOfDll
         self.player = self.pm.read_int(self.client + DWLOCALPLAYER)
 
+    # Converts to 0-360 scale
+    # Returns angle in deg
+    def _angleTruncDeg(self, a) -> float:
+        while a < 0.0:
+            a += 360
+        while a > 360:
+            a -= 360
+        return a
+
     def getPlayerStats(self):
         #playerRes = pm.read_int(client + 0x2ECCF0C)
         #print(pm.read_int(playerRes + 0x161C))
@@ -44,8 +53,8 @@ class GameinfoExtractor():
                         temp_result = self.pm.read_float(self.player + PLAYER_STATS_PTRS[stat][0])
                         if stat == "PositionZ": temp_result += 64
                         # Convert to 0-360deg scale
-                        if stat == "EyeAngleX" or stat == "EyeAngleY": 
-                            if temp_result < 0: temp_result += 360
+                        #if stat == "EyeAngleX" or stat == "EyeAngleY": 
+                        #    if temp_result < 0: temp_result += 360
 
                         result[stat] = temp_result
                     case 'int':
